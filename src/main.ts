@@ -5,6 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  //swagger docs
   const config = new DocumentBuilder()
     .setTitle("nowrite")
     .setDescription('api distribution')
