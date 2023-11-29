@@ -1,36 +1,49 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { messageHandler } from 'src/utils/helpers';
 
 @Injectable()
 export class ArticlesService {
   constructor(private prisma: PrismaService) {}
 
-  create(createArticleDto: CreateArticleDto) {
-    return this.prisma.article.create({data: createArticleDto})
+  async create(createArticleDto: CreateArticleDto) {
+    const article = await this.prisma.article.create({data: createArticleDto})
+
+    return messageHandler("Article created successfully", true, HttpStatus.OK, article)
   }
 
-  findAll() {
-    return this.prisma.article.findMany({where: { published: true }});
+  async findAll() {
+    const articles = await this.prisma.article.findMany({where: { published: true }});
+
+    return messageHandler("Articles fetched successfully", true, HttpStatus.OK, articles)
   }
 
-  findDrafts() {
-    return this.prisma.article.findMany({ where: { published: false } })
+  async findDrafts() {
+    const draftArticles = await this.prisma.article.findMany({ where: { published: false } })
+
+    return messageHandler("Draft Articles fetched successfully", true, HttpStatus.OK, draftArticles)
   }
 
-  findOne(id: number) {
-    return this.prisma.article.findUnique({where: {id}});
+  async findOne(id: number) {
+    const article = await this.prisma.article.findUnique({where: {id}});
+
+    return messageHandler("Article fetched successfully", true, HttpStatus.OK, article)
   }
 
-  update(id: number, updateArticleDto: UpdateArticleDto) {
-    return this.prisma.article.update({
+  async update(id: number, updateArticleDto: UpdateArticleDto) {
+    const article = await this.prisma.article.update({
       where: {id},
       data: updateArticleDto
     });
+
+    return messageHandler("Article updated successfully", true, 200, article)
   }
 
-  remove(id: number) {
-    return this.prisma.article.delete({where: {id}});
+  async remove(id: number) {
+    const article = await this.prisma.article.delete({where: {id}});
+
+    return messageHandler("Article deleted successfully", true, HttpStatus.OK, article)
   }
 }
